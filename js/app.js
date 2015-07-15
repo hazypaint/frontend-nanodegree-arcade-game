@@ -8,7 +8,7 @@ var blockHeight = 83;
 var playerStartLocationX = 202;
 var playerStartLocationY = blockHeight * 4.5;
 var bugWidthHalf = 101/2
-var scorePlayer = null;
+var scorePlayer = 3;
 
 // a function to display the score
 function updateScore() {
