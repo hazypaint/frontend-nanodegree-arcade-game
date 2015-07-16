@@ -202,13 +202,5 @@ var Engine = (function(global) {
      */
     global.ctx = ctx;
 
-    ctx.font = "36px impact";
-    ctx.textAlign = "center";
-
-    ctx.fillStyle = "white";
-    ctx.strokeText("Score: " + scorePlayer, canvas.width / 2, 40); 
-
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
-    ctx.strokeText("Score: " + scorePlayer, canvas.width / 2, 40); 
+    
 })(this);

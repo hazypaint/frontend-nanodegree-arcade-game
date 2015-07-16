@@ -8,14 +8,8 @@ var blockHeight = 83;
 var playerStartLocationX = 202;
 var playerStartLocationY = blockHeight * 4.5;
 var bugWidthHalf = 101/2
-var scorePlayer = 3;
-
-// a function to display the score
-function updateScore() {
-    return scorePlayer;
-    // console.log(currentScore);
-    // // return currentScore;
-};
+var scorePlayer = 2;
+var level = 1
 
 //Game Over function
 function gameOver() {
@@ -52,6 +46,8 @@ var Enemy = function() {
     this.speed = Math.floor((Math.random() * 4)+2);
     // The image for our enemies
     this.sprite = 'images/enemy-bug.png';
+    // var bugSpeed = {
+    
 }
 // A reset function for the enemies once they reach the end of the canvas
 Enemy.prototype.reset = function() {
@@ -66,13 +62,29 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = this.x + this.speed * dt * 100;
+
+    // These if statements determine the speed of the bugs and 
+    // the level the Player is in.
+    if (scorePlayer < 9)
+        level = 1, bugSpeed = 50;
+        console.log(bugSpeed);
+    if (scorePlayer > 9 && scorePlayer < 19)
+        level = 2, bugSpeed = 100;
+        console.log(bugSpeed);
+    if (scorePlayer > 19 && scorePlayer < 29)
+        level = 3, bugSpeed = 120;
+    if (scorePlayer > 29 && scorePlayer < 39)
+        level = 4, bugSpeed = 150;
+    if (scorePlayer > 39)
+        level = 5, bugSpeed = 180;
+
+    this.x = this.x + this.speed * dt * bugSpeed;
     if (this.x > canvasWidth)
         this.reset();
     //collision detection
     for (i=0; i<allEnemies.length; i++){
         if (allEnemies[i].y === player.y && allEnemies[i].x > (player.x - bugWidthHalf) && allEnemies[i].x < (player.x + bugWidthHalf))
-            scorePlayer -= 1, player.reset(), alert("Ooops a bug gotcha! Your new score is " + scorePlayer), gameOver(), updateScore();
+            scorePlayer -= 1, player.reset(), alert("Ooops a bug gotcha! Your new score is " + scorePlayer), gameOver();
     }
 }
 
@@ -123,6 +135,14 @@ Player.prototype.update = function() {
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+
+    //This displays the score and the level
+    ctx.font = "36px impact";
+    ctx.textAlign = "center";
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.strokeText("Score: " + scorePlayer + "  Level: " + level, 250, 90); 
 }
 
 // reset function for the player
@@ -142,7 +162,7 @@ Player.prototype.handleInput = function(key) {
 
         case "up":
             if (this.y < 82)
-                scorePlayer += 2, alert("Congratulations, you made it to the water! Your new score is " + scorePlayer), updateScore(), this.reset();
+                scorePlayer += 2, alert("Congratulations, you've made it to the water! Your new score is " + scorePlayer), this.reset();
             else 
                 this.y -= blockHeight;
             break;
@@ -166,7 +186,7 @@ var Gem = function() {
     this.x = 0;
     this.y = randomLoc();
     this.speed = Math.floor((Math.random() * 2)+1);
-    // The image/sprite for our gems
+    // The image/sprite for our gems, selected at random
     switch(Math.floor(Math.random() * 6)) {
         case 0 :
             this.sprite = 'images/Gem-Blue.png';
@@ -211,7 +231,7 @@ Gem.prototype.update = function(dt) {
     //collision detection
     for (i=0; i<allGems.length; i++){
         if (allGems[i].y === player.y && allGems[i].x > (player.x - bugWidthHalf) && allGems[i].x < (player.x + bugWidthHalf))
-            scorePlayer += 1, updateScore(), this.reset();
+            scorePlayer += 1, this.reset();
     }
 }
 
