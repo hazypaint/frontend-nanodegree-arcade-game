@@ -98,8 +98,6 @@ var Engine = (function(global) {
         allGems.forEach(function(extra) {
             extra.update(dt);
         });
-
-        player.update();
     }
 
     /* This function initially draws the "game level", it will then call

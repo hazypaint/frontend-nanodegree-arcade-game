@@ -1,15 +1,16 @@
 //global variables
-var canvasWidth = 505;
-var canvasHeight = 606;
+"use strict";
+var CANVAS_WIDTH = 505;
 
-var blockWidth = canvasWidth / 5;
-var blockHeight = 83;
+var BLOCK_WIDTH = CANVAS_WIDTH / 5;
+var BLOCK_HEIGHT = 83;
 
-var playerStartLocationX = 202;
-var playerStartLocationY = blockHeight * 4.5;
-var bugWidthHalf = 101/2
+var START_LOCATION_X = 202;
+var START_LOCATION_Y = BLOCK_HEIGHT * 4.5;
+var BUG_WIDTH_HALF = 101/2;
+var bugSpeed = 50;
 var scorePlayer = 2;
-var level = 1
+var level = 1;
 
 //Game Over function
 function gameOver() {
@@ -21,7 +22,7 @@ function gameOver() {
 // for the y value of the enemy and gem
 function randomLoc() {
     var loc = Math.floor((Math.random() * 4)+1);
-    var y = (blockHeight * (loc -2)) + (blockHeight / 2);
+    var y = (BLOCK_HEIGHT * (loc -2)) + (BLOCK_HEIGHT / 2);
     switch (loc) {
         case 2: 
             return y;
@@ -37,6 +38,7 @@ function randomLoc() {
             break;
     }
 }
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here
@@ -45,10 +47,9 @@ var Enemy = function() {
     this.y = randomLoc();
     this.speed = Math.floor((Math.random() * 4)+2);
     // The image for our enemies
-    this.sprite = 'images/enemy-bug.png';
-    // var bugSpeed = {
-    
-}
+    this.sprite = 'images/enemy-bug.png';   
+};
+
 // A reset function for the enemies once they reach the end of the canvas
 Enemy.prototype.reset = function() {
     this.x = 0;
@@ -79,25 +80,25 @@ Enemy.prototype.update = function(dt) {
         level = 5, bugSpeed = 180;
 
     this.x = this.x + this.speed * dt * bugSpeed;
-    if (this.x > canvasWidth)
+    if (this.x > CANVAS_WIDTH)
         this.reset();
     //collision detection
-    for (i=0; i<allEnemies.length; i++){
-        if (allEnemies[i].y === player.y && allEnemies[i].x > (player.x - bugWidthHalf) && allEnemies[i].x < (player.x + bugWidthHalf))
+    for (var i=0; i<allEnemies.length; i++){
+        if (allEnemies[i].y === player.y && allEnemies[i].x > (player.x - BUG_WIDTH_HALF) && allEnemies[i].x < (player.x + BUG_WIDTH_HALF))
             scorePlayer -= 1, player.reset(), alert("Ooops a bug gotcha! Your new score is " + scorePlayer), gameOver();
     }
-}
+};
 
 // Draws the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Player class
 var Player = function() {
     // initial location
-    this.x = playerStartLocationX;
-    this.y = playerStartLocationY;
+    this.x = START_LOCATION_X;
+    this.y = START_LOCATION_Y;
 
     // selects random player image
     switch(Math.floor(Math.random() * 5)) {
@@ -124,13 +125,7 @@ var Player = function() {
         default:
             this.sprite = 'images/char-boy.png';
     }
-}
-
-// Update the player's position, required method for game
-// Parameter: dt, a time delta between ticks
-Player.prototype.update = function() {
-    return;
-}
+};
 
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
@@ -142,39 +137,39 @@ Player.prototype.render = function() {
 
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
-    ctx.strokeText("Score: " + scorePlayer + "  Level: " + level, 250, 90); 
-}
+    ctx.strokeText("Score: " + scorePlayer + "  level: " + level, 250, 90); 
+};
 
 // reset function for the player
 Player.prototype.reset = function() {
-    this.x = playerStartLocationX;
-    this.y = playerStartLocationY;
-}
+    this.x = START_LOCATION_X;
+    this.y = START_LOCATION_Y;
+};
 
 // handleInput function for key functionality
 Player.prototype.handleInput = function(key) {
     switch(key) {
         case "left":
             if (this.x > 0) {
-                this.x -= blockWidth;
-            };
+                this.x -= BLOCK_WIDTH;
+            }
             break;
 
         case "up":
             if (this.y < 82)
                 scorePlayer += 2, alert("Congratulations, you've made it to the water! Your new score is " + scorePlayer), this.reset();
             else 
-                this.y -= blockHeight;
+                this.y -= BLOCK_HEIGHT;
             break;
 
         case "right":
-            if (this.x < (canvasWidth - blockWidth))
-                this.x += blockWidth;
+            if (this.x < (CANVAS_WIDTH - BLOCK_WIDTH))
+                this.x += BLOCK_WIDTH;
             break;
 
         case "down":
-            if (this.y < blockHeight * 4)
-                this.y += blockHeight;
+            if (this.y < BLOCK_HEIGHT * 4)
+                this.y += BLOCK_HEIGHT;
             break;
     }
 };
@@ -211,7 +206,7 @@ var Gem = function() {
         case 5:
             this.sprite = 'images/Star.png';
     }
-}
+};
 // A reset function for the gems 
 Gem.prototype.reset = function() {
     this.x = 0;
@@ -226,19 +221,20 @@ Gem.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x = this.x + this.speed * dt * 90;
-    if (this.x > canvasWidth)
+    if (this.x > CANVAS_WIDTH)
         this.reset();
     //collision detection
-    for (i=0; i<allGems.length; i++){
-        if (allGems[i].y === player.y && allGems[i].x > (player.x - bugWidthHalf) && allGems[i].x < (player.x + bugWidthHalf))
+    for (var i=0; i<allGems.length; i++){
+        if (allGems[i].y === player.y && allGems[i].x > (player.x - BUG_WIDTH_HALF) && allGems[i].x < (player.x + BUG_WIDTH_HALF))
             scorePlayer += 1, this.reset();
     }
-}
+};
 
 // Draws the enemy on the screen, required method for game
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
+
 // Instantiation of  objects.
 // all enemy objects are placed array called allEnemies
 // the player object is placed in a variable called player
